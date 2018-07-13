@@ -99,13 +99,11 @@ function resultDataToStudies(resultData) {
 OHIF.studies.services.QIDO.Studies = (server, filter) => {
     const url = filterToQIDOURL(server, filter);
 
-    try {
-        const result = DICOMWeb.getJSON(url, server.requestOptions);
+    return new Promise((resolve, reject) => {
+        DICOMWeb.getJSON(url, server.requestOptions).then(result => {
+            const studies = resultDataToStudies(result);
 
-        return resultDataToStudies(result.data);
-    } catch (error) {
-        OHIF.log.trace();
-
-        throw error;
-    }
+            resolve(studies);
+        }, reject);
+    });
 };

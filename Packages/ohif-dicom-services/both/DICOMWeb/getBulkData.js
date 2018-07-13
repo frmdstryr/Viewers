@@ -1,8 +1,7 @@
 import { OHIF } from 'meteor/ohif:core';
+//import makeRequest from './makeRequest';
 
 const ASCII = 'ascii';
-const http = Npm.require('http')
-const url = Npm.require('url');
 
 function getMultipartContentInfo(headers) {
 
@@ -121,9 +120,9 @@ function parseResponse(headers, data) {
 
 }
 
-function makeRequest(geturl, options, callback) {
+async function makeRequest(geturl, options, callback) {
     const headers = 'multipart/related; type=application/octet-stream';
-    const parsed = url.parse(geturl);
+    const parsed = new URL(geturl);
 
     let requestOpt = {
         hostname: parsed.hostname,
@@ -134,16 +133,6 @@ function makeRequest(geturl, options, callback) {
         method: 'GET',
     };
 
-    let requester;
-    if (parsed.protocol === 'https:') {
-        requester = https.request;
-
-        const allowUnauthorizedAgent = new https.Agent({ rejectUnauthorized: false });
-        requestOpt.agent = allowUnauthorizedAgent
-    } else {
-        requester = http.request;
-    }
-
     if (parsed.port) {
         requestOpt.port = parsed.port;
     }
@@ -152,7 +141,7 @@ function makeRequest(geturl, options, callback) {
         requestOpt.auth = options.auth;
     }
 
-    let req = requester(requestOpt, function(resp) {
+    let req = fetch(parsed.path, requestOpt, function(resp) {
 
         let data = [];
 
@@ -198,23 +187,21 @@ function makeRequest(geturl, options, callback) {
 
 }
 
-const makeRequestSync = Meteor.wrapAsync(makeRequest);
-
 // TODO: Unify this stuff with the getJSON code
-DICOMWeb.getBulkData = function(geturl, options) {
+DICOMWeb.getBulkData = async function(geturl, options) {
 
     if (options && options.logRequests) {
         OHIF.log.info(geturl);
     }
 
     if (options && options.logTiming) {
-        console.time(geturl);
+        OHIF.log.time(geturl);
     }
 
-    var result = makeRequestSync(geturl, options);
+    const result = await makeRequest(geturl, options);
 
     if (options && options.logTiming) {
-        console.timeEnd(geturl);
+        OHIF.log.timeEnd(geturl);
     }
 
     if (options && options.logResponses) {

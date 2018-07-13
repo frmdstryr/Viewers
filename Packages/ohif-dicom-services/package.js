@@ -4,6 +4,11 @@ Package.describe({
     version: '0.0.1'
 });
 
+Npm.depends({
+    'url-parse': '1.4.1',
+    'isomorphic-fetch': '2.2.1'
+});
+
 Package.onUse(function(api) {
     api.versionsFrom('1.4');
 
@@ -11,16 +16,16 @@ Package.onUse(function(api) {
     api.use('ecmascript');
 
     // DICOMWeb functions
-    api.addFiles('server/DICOMWeb/namespace.js', 'server');
-    api.addFiles('server/DICOMWeb/getJSON.js', 'server');
-    api.addFiles('server/DICOMWeb/getName.js', 'server');
-    api.addFiles('server/DICOMWeb/getNumber.js', 'server');
-    api.addFiles('server/DICOMWeb/getString.js', 'server');
-    api.addFiles('server/DICOMWeb/getModalities.js', 'server');
-    api.addFiles('server/DICOMWeb/getAttribute.js', 'server');
-    api.addFiles('server/DICOMWeb/getBulkData.js', 'server');
+    api.addFiles('both/DICOMWeb/namespace.js');
+    api.addFiles('both/DICOMWeb/getJSON.js');
+    api.addFiles('both/DICOMWeb/getName.js');
+    api.addFiles('both/DICOMWeb/getNumber.js');
+    api.addFiles('both/DICOMWeb/getString.js');
+    api.addFiles('both/DICOMWeb/getModalities.js');
+    api.addFiles('both/DICOMWeb/getAttribute.js');
+    api.addFiles('both/DICOMWeb/getBulkData.js');
 
-    api.export('DICOMWeb', 'server');
+    api.export('DICOMWeb');
 
     // DIMSE functions
     api.addFiles('server/DIMSE/require.js', 'server');

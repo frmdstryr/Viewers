@@ -208,6 +208,12 @@ function resultDataToStudyMetadata(server, studyInstanceUid, resultData) {
     var seriesMap = {};
     var seriesList = [];
 
+    if (!WADOProxy) {
+        WADOProxy = {
+            convertURL: (a => a)
+        };
+    }
+
     if (!resultData.length) {
         return;
     }
@@ -338,26 +344,19 @@ function resultDataToStudyMetadata(server, studyInstanceUid, resultData) {
  * Retrieved Study MetaData from a DICOM server using a WADO call
  * @param server
  * @param studyInstanceUid
- * @returns {{seriesList: Array, patientName: *, patientId: *, accessionNumber: *, studyDate: *, modalities: *, studyDescription: *, imageCount: *, studyInstanceUid: *}}
+ * @returns {Promise}
  */
 OHIF.studies.services.WADO.RetrieveMetadata = function(server, studyInstanceUid) {
-    var url = buildUrl(server, studyInstanceUid);
+    const url = buildUrl(server, studyInstanceUid);
 
-    try {
-        var result = DICOMWeb.getJSON(url, server.requestOptions);
+    return new Promise((resolve, reject) => {
+        DICOMWeb.getJSON(url, server.requestOptions).then(result => {
+            const study = resultDataToStudyMetadata(server, studyInstanceUid, result);
 
-        var study = resultDataToStudyMetadata(server, studyInstanceUid, result.data);
-        if (!study) {
-            study = {};
-        }
+            study.wadoUriRoot = server.wadoUriRoot;
+            study.studyInstanceUid = studyInstanceUid;
 
-        study.wadoUriRoot = server.wadoUriRoot;
-        study.studyInstanceUid = studyInstanceUid;
-
-        return study;
-    } catch (error) {
-        OHIF.log.trace();
-
-        throw error;
-    }
+            resolve(study);
+        }, reject);
+    });
 };
