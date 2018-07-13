@@ -108,10 +108,10 @@ ActiveEntry.verifyEmail = function (email) {
   if (email.length === 0) {
     ActiveEntry.errorMessages.set('email', 'Email is required');
     ActiveEntry.successMessages.set('email', null);
-  } else if (email.indexOf("@") === -1){
+  /*} else if (email.indexOf("@") === -1){
     ActiveEntry.errorMessages.set('email', 'Email is poorly formatted');
-    ActiveEntry.successMessages.set('email', null);
-  } else if (email.indexOf("@") >= 0){
+    ActiveEntry.successMessages.set('email', null);*/
+  } else {
     ActiveEntry.errorMessages.set('email', null);
     ActiveEntry.successMessages.set('email', 'Email present');
   }
@@ -239,10 +239,11 @@ ActiveEntry.loginWithPassword = function(signInArgs, passwordOptions) {
     return;
   }
 
-  Meteor.loginWithPassword(emailValue, password, function (loginError, result) {
+  //Meteor.loginWithPassword(emailValue, password, function (loginError, result) {
+  Meteor.loginWithMeteorKeycloak(emailValue, password, function (loginError, result) {
     if (loginError) {
       // Login failed
-      if (loginError.error == 403) {
+      if (loginError.error === 403) {
         ActiveEntry.updateFailedAttempts(signInArgs, passwordOptions, loginError);
       }
       return;

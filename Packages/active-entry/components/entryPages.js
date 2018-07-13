@@ -48,5 +48,6 @@ Template.registerHelper("logoUrl", function (argument){
 
 
 Template.registerHelper("getButtonColor", function (argument){
-  return "background-color: " + Theme.getPaletteColor("colorB") + "; ";
+  return '';
+  //return "background-color: " + Theme.getPaletteColor("colorB") + "; ";
 });
