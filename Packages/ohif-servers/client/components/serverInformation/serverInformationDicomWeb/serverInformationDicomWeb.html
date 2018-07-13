@@ -33,6 +33,9 @@
     {{#group class='row' key='requestOptions'}}
         <div class="col-lg-6">
             {{>inputText labelClass='form-group' key='auth'}}
+            <div class="checkbox pull-left">
+                {{>inputCheckbox key='requestFromBrowser'}}
+            </div>
         </div>
         <div class="col-lg-6">
             <strong>Logging options</strong>

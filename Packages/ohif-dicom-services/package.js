@@ -1,7 +1,12 @@
 Package.describe({
     name: 'ohif:dicom-services',
-    summary: 'DICOM Services: DICOMWeb and DIMSE C-Service functions',
+    summary: 'DICOM Services: DIMSE C-Service functions',
     version: '0.0.1'
+});
+
+Npm.depends({
+    'url-parse': '1.4.1',
+    'isomorphic-fetch': '2.2.1'
 });
 
 Package.onUse(function(api) {
@@ -9,18 +14,6 @@ Package.onUse(function(api) {
 
     api.use('http');
     api.use('ecmascript');
-
-    // DICOMWeb functions
-    api.addFiles('server/DICOMWeb/namespace.js', 'server');
-    api.addFiles('server/DICOMWeb/getJSON.js', 'server');
-    api.addFiles('server/DICOMWeb/getName.js', 'server');
-    api.addFiles('server/DICOMWeb/getNumber.js', 'server');
-    api.addFiles('server/DICOMWeb/getString.js', 'server');
-    api.addFiles('server/DICOMWeb/getModalities.js', 'server');
-    api.addFiles('server/DICOMWeb/getAttribute.js', 'server');
-    api.addFiles('server/DICOMWeb/getBulkData.js', 'server');
-
-    api.export('DICOMWeb', 'server');
 
     // DIMSE functions
     api.addFiles('server/DIMSE/require.js', 'server');

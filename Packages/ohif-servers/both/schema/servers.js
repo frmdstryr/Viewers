@@ -29,6 +29,12 @@ export const DICOMWebRequestOptions = new SimpleSchema({
         defaultValue: 'orthanc:orthanc',
         optional: true
     },
+    requestFromBrowser: {
+        type: Boolean,
+        label: 'Make DICOMWeb requests from the Browser',
+        defaultValue: false,
+        optional: true
+    },
     logRequests: {
         type: Boolean,
         defaultValue: true,

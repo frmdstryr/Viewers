@@ -1,8 +1,4 @@
-import { OHIF } from 'meteor/ohif:core';
-
 const ASCII = 'ascii';
-const http = Npm.require('http')
-const url = Npm.require('url');
 
 function getMultipartContentInfo(headers) {
 
@@ -121,9 +117,9 @@ function parseResponse(headers, data) {
 
 }
 
-function makeRequest(geturl, options, callback) {
+async function makeRequest(geturl, options, callback) {
     const headers = 'multipart/related; type=application/octet-stream';
-    const parsed = url.parse(geturl);
+    const parsed = new URL(geturl);
 
     let requestOpt = {
         hostname: parsed.hostname,
@@ -134,16 +130,6 @@ function makeRequest(geturl, options, callback) {
         method: 'GET',
     };
 
-    let requester;
-    if (parsed.protocol === 'https:') {
-        requester = https.request;
-
-        const allowUnauthorizedAgent = new https.Agent({ rejectUnauthorized: false });
-        requestOpt.agent = allowUnauthorizedAgent
-    } else {
-        requester = http.request;
-    }
-
     if (parsed.port) {
         requestOpt.port = parsed.port;
     }
@@ -152,7 +138,7 @@ function makeRequest(geturl, options, callback) {
         requestOpt.auth = options.auth;
     }
 
-    let req = requester(requestOpt, function(resp) {
+    let req = fetch(parsed.path, requestOpt, function(resp) {
 
         let data = [];
 
@@ -168,9 +154,9 @@ function makeRequest(geturl, options, callback) {
         });
 
         resp.on('error', function (responseError) {
-            OHIF.log.error('There was an error in the DICOMWeb Server');
-            OHIF.log.error(responseError.stack);
-            OHIF.log.trace();
+            console.error('There was an error in the DICOMWeb Server');
+            console.error(responseError.stack);
+            console.trace();
 
             callback(responseError, null);
         });
@@ -186,10 +172,10 @@ function makeRequest(geturl, options, callback) {
     });
 
     req.on('error', function (requestError) {
-        OHIF.log.error('Couldn\'t connect to DICOMWeb server.');
-        OHIF.log.error('Make sure you are trying to connect to the right server and that it is up and running.');
-        OHIF.log.error(requestError.stack);
-        OHIF.log.trace();
+        console.error('Couldn\'t connect to DICOMWeb server.');
+        console.error('Make sure you are trying to connect to the right server and that it is up and running.');
+        console.error(requestError.stack);
+        console.trace();
 
         callback(requestError, null);
     });
@@ -198,27 +184,25 @@ function makeRequest(geturl, options, callback) {
 
 }
 
-const makeRequestSync = Meteor.wrapAsync(makeRequest);
-
 // TODO: Unify this stuff with the getJSON code
-DICOMWeb.getBulkData = function(geturl, options) {
+const getBulkData = async function(geturl, options) {
 
     if (options && options.logRequests) {
-        OHIF.log.info(geturl);
+        console.log(geturl);
     }
 
     if (options && options.logTiming) {
         console.time(geturl);
     }
 
-    var result = makeRequestSync(geturl, options);
+    const result = await makeRequest(geturl, options);
 
     if (options && options.logTiming) {
         console.timeEnd(geturl);
     }
 
     if (options && options.logResponses) {
-        OHIF.log.info(result);
+        console.log(result);
     }
 
     if (!Buffer.isBuffer(result)) {
@@ -228,3 +212,5 @@ DICOMWeb.getBulkData = function(geturl, options) {
     return result;
 
 };
+
+export default getBulkData;
