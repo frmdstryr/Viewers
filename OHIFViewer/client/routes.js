@@ -1,10 +1,11 @@
 import { Router } from 'meteor/iron:router';
 import { OHIF } from 'meteor/ohif:core';
 
-Router.configure({
+// TODO: I don't know why I had to remove these. Things don't seem to work with them
+/*Router.configure({
     layoutTemplate: 'layout',
     loadingTemplate: 'layout'
-});
+});*/
 
 Router.onBeforeAction('loading');
 

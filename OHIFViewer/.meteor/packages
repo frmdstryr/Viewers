@@ -51,3 +51,14 @@ cultofcoders:persistent-session
 shell-server@0.3.1
 underscore
 meteortesting:mocha
+
+ohif:user
+ohif:user-keycloak
+
+mxab:keycloak-oauth@0.0.2
+mxab:keycloak-loader
+mxab:accounts-keycloak
+
+accounts-base
+accounts-oauth
+oauth-encryption

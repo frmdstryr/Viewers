@@ -33,3 +33,15 @@ Template.userLogin.onCreated(() => {
 
     instance.schema = OHIF.user.schema;
 });
+
+Template.userLogin.events({
+    'click .js-login-keycloak'() {
+        Meteor.loginWithMeteorKeycloak({}, function(error) {
+           if (error) {
+               throw new Error(error);
+           }
+
+           Router.go('/studylist');
+        });
+    }
+});

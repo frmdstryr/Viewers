@@ -10,7 +10,7 @@
         "imageRendering": "wadouri",
         "thumbnailRendering": "wadors",
         "requestOptions": {
-          "auth": "admin:admin",
+          //"auth": "admin:admin",
           "logRequests": true,
           "logResponses": false,
           "logTiming": true
